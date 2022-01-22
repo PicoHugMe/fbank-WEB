@@ -1,0 +1,121 @@
+<template>
+	<el-form :rules="rules" :model="login" ref="login">
+		<el-form-item prop="name">
+			<el-input
+				placeholder="请输入登录邮箱"
+				prefix-icon="el-icon-user-solid"
+				v-model="login.name"
+				maxlength="255"
+			></el-input>
+		</el-form-item>
+		<el-form-item prop="pwd">
+			<el-input
+				placeholder="请输入登录密码"
+				prefix-icon="el-icon-lock"
+				v-model="login.pwd"
+				maxlength="32"
+				show-password
+			></el-input>
+		</el-form-item>
+		<el-button type="primary" @click="logIn('login')" v-loading="loading">{{ loginStr }}</el-button>
+	</el-form>
+
+</template>
+
+<script>
+import {requestSignIn} from "../../assets/js/api";
+
+export default {
+	name: "Signin",
+	data() {
+		return {
+			login: {
+				name: 'testname@123.com',
+				pwd: 'testpwdA2$'
+			},
+			loginStr: '登录',
+			loading: false,
+			rules: {
+				name: [
+					{required: true, message: '请输入登录邮箱', trigger: 'blur'},
+					{min: 5, max: 255, message: '邮箱长度在5到255个字符', trigger: 'blue'},
+					{
+						pattern: '^[a-zA-Z0-9\\-\\_]*\\@[a-zA-Z0-9]*\\.[a-zA-Z0-9]*.*[^._^-]$',
+						message: '请输入正确的邮箱地址',
+						trigger: 'blur'
+					}
+				],
+				pwd: [
+					{required: true, message: '请输入登录密码', trigger: 'blur'},
+					{min: 6, max: 32, message: '密码长度为6到32位字符', trigger: 'blue'},
+				]
+			}
+		}
+	},
+	methods: {
+		logIn(login) {
+			let _this = this;
+			//检验表单数据是否符合规范
+			this.$refs[login].validate((valid) => {
+				if (valid) {
+					const loginParams = {
+						email: this.login.name,
+						password: this.login.pwd
+					}
+					this.loading = true;
+					this.$message('正在登录');
+					_this.loginStr = '正在登录';
+					
+					requestSignIn(loginParams).then((data) => {
+						console.log('data:', data);
+						if (!data.isSuccessed) {
+							_this.$message({
+								message: data.message,
+								type: 'error'
+							});
+							_this.loading = false;
+							_this.loginStr = '重新登录';
+						} else {
+							const saveMessage = {
+								tokenStr: data.response.tokenStr,
+								isSuccessed: data.isSuccessed
+							}
+							window.localStorage.isSuccessed = saveMessage.isSuccessed;
+							window.localStorage.token = saveMessage.tokenStr;
+							this.$store.commit('addLoginInfo', saveMessage)
+							setTimeout(function () {
+								_this.$message({
+									message: '登录成功，正在跳转。',
+									type: 'success'
+								})
+								setTimeout(function () {
+									_this.$router.push({path: '/Welcome'})
+								}, 200)
+							}, 800)
+						}
+					}).catch((e) => {
+						// console.log(e.response.data)
+						_this.$alert(`${e.response.data.message}`, '错误', {confirmButtonText: '确定'})
+						_this.loading = false;
+						_this.loginStr = "重新登录";
+					})
+				}
+			});
+		}
+	},
+}
+</script>
+
+<style scoped lang="less">
+@import "../../assets/css/Global";
+
+.el-form {
+	padding-left: 30px;
+	padding-right: 30px;
+	margin-top: 40px*2;
+}
+
+.el-button {
+	width: 100%;
+}
+</style>
