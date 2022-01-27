@@ -7,10 +7,10 @@ let base = 'http://localhost:8080'
 // axios.defaults.timeout=10000;
 
 export const requestSignIn = (params) => {
-		return axios.post(`${base}/auth/login`, {email: params.email, password: params.password}).then(res => res.data);
+		return axios.post(`${base}/Auth/login`, {account: params.email, password: params.password}).then(res => res.data);
 }
 export const requestSignUp = (params) => {
-		return axios.post(`${base}/auth/register`, {email: params.email, password: params.password}).then(res => res.data);
+		return axios.post(`${base}/Auth/register`, {email: params.email, password: params.password}).then(res => res.data);
 }
 
 export const getUserInfo = (userToken) => {

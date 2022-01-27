@@ -22,7 +22,7 @@ const router = new Router({
 				{
 						path: '/',
 						// redirect: '/logins/login',
-						redirect: '/Welcome/SelfLibrary/AllFile'
+						redirect: '/logins/login'
 				},
 				{
 						path: '/logins/login',

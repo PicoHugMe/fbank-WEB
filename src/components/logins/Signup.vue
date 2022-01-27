@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import {requestSignUp} from '../../assets/js/api'
+import {requestSignUp} from '@/assets/js/api'
 export default {
 	name: "Signup",
 	data() {
@@ -63,8 +63,9 @@ export default {
 					{required: true, message: '请输入注册密码', trigger: 'blur'},
 					{min: 6, max: 32, message: '密码长度需在6到32字符', trigger: 'blue'},
 					{
-						pattern: '^[a-zA-Z0-9\\&\\!\\@\\#\\$\\%\\*\\,\\<\\.\\>\\?\\;\\:\\"\\[\\{\\-\\_\\=\\+\\`\\~]*$',
-						message: '密码需使用字母加数字组合',
+						// pattern: '^[a-zA-Z0-9\\&\\!\\@\\#\\$\\%\\*\\,\\<\\.\\>\\?\\;\\:\\"\\[\\{\\-\\_\\=\\+\\`\\~]*$',
+            pattern: '^(?=.*\\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.?])[\\da-zA-Z~!@#$%^&*.?]{8,}$',
+						message: '密码需使用字母加数字加特殊字符组合',
 						trigger: 'blur'
 					},
 				],
@@ -82,22 +83,12 @@ export default {
 					const loginParams = {
 						email: this.login.name,
 						password: this.login.pwd,
-						// 			// sex: this.login.sex
 					}
 					this.loading = true;
 					this.$message('正在注册');
 					_this.loginStr = '正在注册';
 					
-					requestSignUp(loginParams).then((data) => {
-						// console.log('data:',data);
-						if (!data.isSuccessed) {
-							_this.$message({
-								message: data.message,
-								type: 'error'
-							});
-							_this.loading = false;
-							_this.loginStr = '重新注册';
-						} else {
+					requestSignUp(loginParams).then(() => {
 							setTimeout(function () {
 								_this.$message({
 									message: '注册成功，跳转至登录页面。',
@@ -107,10 +98,9 @@ export default {
 									_this.$router.push({path: '/logins/login/signin'})
 								}, 500)
 							}, 2500)
-						}
 					}).catch((e) => {
-						console.log('e:', e.message)
-						_this.$alert(`${e.response.data.message}`, '错误', {
+            console.log('e:', e.response.data.errors[0])
+						_this.$alert('该用户已存在', '错误', {
 							confirmButtonText: '确定'
 						})
 						_this.loading = false;

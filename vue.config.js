@@ -1,10 +1,10 @@
 module.exports = {
 		lintOnSave: false,
 		devServer: {
-				// proxy: 'https://zzxfkme.icu:5001'
+				// proxy: 'http://152.136.109.47:5000/api'
 				proxy: {
-						'/auth': {
-								target: 'https://zzxfkme.icu:5001',
+						'/Auth': {
+								target: 'http://152.136.109.47:5000/api',
 								ws: true,
 								changeOrigin: true
 						},

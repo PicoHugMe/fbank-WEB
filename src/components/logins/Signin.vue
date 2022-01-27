@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import {requestSignIn} from "../../assets/js/api";
+import {requestSignIn} from "@/assets/js/api";
 
 export default {
 	name: "Signin",
@@ -68,20 +68,14 @@ export default {
 					
 					requestSignIn(loginParams).then((data) => {
 						console.log('data:', data);
-						if (!data.isSuccessed) {
-							_this.$message({
-								message: data.message,
-								type: 'error'
-							});
-							_this.loading = false;
-							_this.loginStr = '重新登录';
-						} else {
 							const saveMessage = {
-								tokenStr: data.response.tokenStr,
-								isSuccessed: data.isSuccessed
+                access_token: data.access_token,
+                expires_in: data.expires_in,
+                token_type:data.token_type
 							}
-							window.localStorage.isSuccessed = saveMessage.isSuccessed;
-							window.localStorage.token = saveMessage.tokenStr;
+							window.localStorage.access_token = saveMessage.access_token;
+							window.localStorage.expires_in = saveMessage.expires_in;
+              window.localStorage.token_type = saveMessage.token_type;
 							this.$store.commit('addLoginInfo', saveMessage)
 							setTimeout(function () {
 								_this.$message({
@@ -92,10 +86,9 @@ export default {
 									_this.$router.push({path: '/Welcome'})
 								}, 200)
 							}, 800)
-						}
 					}).catch((e) => {
-						// console.log(e.response.data)
-						_this.$alert(`${e.response.data.message}`, '错误', {confirmButtonText: '确定'})
+						console.log(e.response.data)
+						_this.$alert(`用户名或密码错误`, '错误', {confirmButtonText: '确定'})
 						_this.loading = false;
 						_this.loginStr = "重新登录";
 					})

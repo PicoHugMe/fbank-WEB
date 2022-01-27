@@ -89,14 +89,14 @@ export default {
 		}
 	},
 	created() {
-		if (!window.localStorage.isSuccessed) {
-			this.$router.push({path: '/logins/login/signin'});
-			this.$message({
-				type: 'error',
-				message: '非法访问！'
-			})
-			this.$destroy();
-		} else {
+		// if (!window.localStorage.isSuccessed) {
+		// 	this.$router.push({path: '/logins/login/signin'});
+		// 	this.$message({
+		// 		type: 'error',
+		// 		message: '非法访问！'
+		// 	})
+		// 	this.$destroy();
+		// } else {
 			if (!this.$store.state.loginInfo.isSuccessed) {
 				const saveMessage = {
 					tokenStr: window.localStorage.token,
@@ -116,7 +116,7 @@ export default {
 					console.log('data:', data);
 				})
 				
-			}
+			// }
 		}
 	},
 	mounted() {
