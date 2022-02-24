@@ -21,7 +21,6 @@ const router = new Router({
 		routes: [
 				{
 						path: '/',
-						// redirect: '/logins/login',
 						redirect: '/logins/login'
 				},
 				{

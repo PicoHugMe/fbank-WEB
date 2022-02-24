@@ -69,13 +69,15 @@ export default {
 					requestSignIn(loginParams).then((data) => {
 						console.log('data:', data);
 							const saveMessage = {
-                access_token: data.access_token,
-                expires_in: data.expires_in,
-                token_type:data.token_type
+                access_token: data.accessToken,
+                expires_in: data.expires,
+                token_type:data.tokenType,
+								success:data.success
 							}
 							window.localStorage.access_token = saveMessage.access_token;
 							window.localStorage.expires_in = saveMessage.expires_in;
               window.localStorage.token_type = saveMessage.token_type;
+							window.localStorage.success=saveMessage.success;
 							this.$store.commit('addLoginInfo', saveMessage)
 							setTimeout(function () {
 								_this.$message({
@@ -87,8 +89,7 @@ export default {
 								}, 200)
 							}, 800)
 					}).catch((e) => {
-						console.log(e.response.data)
-						_this.$alert(`用户名或密码错误`, '错误', {confirmButtonText: '确定'})
+						_this.$alert(e.response.data[0], '错误', {confirmButtonText: '确定'})
 						_this.loading = false;
 						_this.loginStr = "重新登录";
 					})

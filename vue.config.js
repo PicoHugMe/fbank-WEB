@@ -1,21 +1,23 @@
 module.exports = {
 		lintOnSave: false,
 		devServer: {
-				// proxy: 'http://152.136.109.47:5000/api'
+				// proxy: 'http://localhost:7260/api'
 				proxy: {
-						'/Auth': {
-								target: 'http://152.136.109.47:5000/api',
+						'/api/auth': {
+								target: 'https://localhost:7260',
 								ws: true,
 								changeOrigin: true
 						},
-						'/api/file': {
-								target: 'http://zzxfkme.icu:5888',
+						'/api/organization': {
+								target: 'https://localhost:7260',
 								ws: true,
 								changeOrigin: true
 						},
 						'/api/privatespace': {
-								target: 'http://zzxfkme.icu:5000'
-						}
+								target: 'http://localhost:7260',
+								ws: true,
+								changeOrigin: true
+						},
 				}
 		}
 }

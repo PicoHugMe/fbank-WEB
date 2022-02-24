@@ -88,7 +88,8 @@ export default {
 					this.$message('正在注册');
 					_this.loginStr = '正在注册';
 					
-					requestSignUp(loginParams).then(() => {
+					requestSignUp(loginParams).then((data) => {
+						console.log(data)
 							setTimeout(function () {
 								_this.$message({
 									message: '注册成功，跳转至登录页面。',
@@ -99,8 +100,7 @@ export default {
 								}, 500)
 							}, 2500)
 					}).catch((e) => {
-            console.log('e:', e.response.data.errors[0])
-						_this.$alert('该用户已存在', '错误', {
+						_this.$alert(e.response.data[0], '错误', {
 							confirmButtonText: '确定'
 						})
 						_this.loading = false;
