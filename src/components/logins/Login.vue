@@ -39,7 +39,7 @@ export default {
 		}
 	},
 	beforeDestroy() {
-		console.log('login destory');
+		// console.log('login destory');
 	}
 	
 }

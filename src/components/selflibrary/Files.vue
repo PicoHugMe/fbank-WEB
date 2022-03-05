@@ -1,5 +1,5 @@
 <template>
-	<el-container>
+	<el-container class="fileMain">
 		<el-dialog title="新建文件夹" :visible.sync="confirmNewFolder" width="30%" center>
 			<div>
 				<el-input placeholder="请输入文件夹名" v-model="newFolderName"></el-input>
@@ -35,11 +35,11 @@
 							:auto-upload="true"
 							:on-progress="uploadProgress"
 							:on-success="isOK"
+							:headers="myHeaders"
 							:file-list="fileList">
-							<el-button plain size="small" type="primary" class="newUpload">点击上传</el-button>
+							<el-button plain size="small" type="primary" class="newUpload">上传文件</el-button>
 						</el-upload>
 						<el-button plain type="primary" size="small" class="newFolder" @click="confirmNewFolder=true" >新建文件夹</el-button>
-						
 					</div>
 				</div>
 			</el-breadcrumb>
@@ -51,7 +51,7 @@
 			>
 				<el-table-column prop="filename" label="名称">
 					<template slot-scope="scope">
-						<el-link @click="openOrDownloadFile(scope.row.isDir,scope.row.fileUrl,scope.row.filename)">
+						<el-link @click="openOrDownloadFile(scope.row.isDir,scope.row.fileId,scope.row.filename)">
 							{{ scope.row.filename }}
 						</el-link>
 					</template>
@@ -63,26 +63,26 @@
 						<div class="action">
 							<i class="el-icon-more"></i>
 							<div class="actions">
-								<el-row class="tags">
-									<div>标签</div>
-									<div>
-										<el-button type="danger" circle size="mini"></el-button>
-										<el-button type="warning" circle size="mini"></el-button>
-										<el-button type="success" circle size="mini"></el-button>
-										<el-button type="info" circle size="mini"></el-button>
-									</div>
+<!--								<el-row class="tags">-->
+<!--									<div>标签</div>-->
+<!--									<div>-->
+<!--										<el-button type="danger" circle size="mini"></el-button>-->
+<!--										<el-button type="warning" circle size="mini"></el-button>-->
+<!--										<el-button type="success" circle size="mini"></el-button>-->
+<!--										<el-button type="info" circle size="mini"></el-button>-->
+<!--									</div>-->
+<!--								</el-row>-->
+								<el-row>
+									<el-button size="mini" @click="selectedId=scope.row.fileId;confirmRename=true;renameFFName=`${scope.row.filename}`">重命名</el-button>
 								</el-row>
 								<el-row>
-									<el-button size="mini" @click="selectedId=scope.row.fileId;confirmRename=true;">重命名</el-button>
+									<el-button size="mini" @click="openOrDownloadFile(scope.row.isDir,scope.row.fileId)" :disabled="scope.row.isDir">下载</el-button>
 								</el-row>
+<!--								<el-row>-->
+<!--									<el-button size="mini">分享</el-button>-->
+<!--								</el-row>-->
 								<el-row>
-									<el-button size="mini" @click="openOrDownloadFile(scope.row.isDir,scope.row.fileUrl)">下载</el-button>
-								</el-row>
-								<el-row>
-									<el-button size="mini">分享</el-button>
-								</el-row>
-								<el-row>
-									<el-button size="mini" @click="deleteFileOrFolder(scope.row.fileId)">删除</el-button>
+									<el-button size="mini" @click="deleteFileOrFolder(scope.row.isDir,scope.row.fileId)">删除</el-button>
 								</el-row>
 							</div>
 						</div>
@@ -105,13 +105,14 @@
 </template>
 
 <script>
-import {deleteFile, getPathFiles, newFolder,renameFFs} from "@/assets/js/api";
-import {fileSizeTransfer} from "@/assets/js/Global";
+import {deleteFile, getPathFiles, newFolder,renameFFs,deleteFolder} from "@/assets/js/api";
+import {fileSizeTransfer,formatDateTime} from "@/assets/js/Global";
 
 export default {
 	name: "Files",
 	data() {
 		return {
+			myHeaders:{'Authorization':window.localStorage['access_token']},
 			tableData: [],
 			isLoading: true, //加载动画
 			modHeight: '100%',//调整高度,暂不启用
@@ -134,7 +135,8 @@ export default {
 		}
 	},
 	mounted() {
-		this.refreshFiles();
+		this.refreshFiles(this.goPath);
+		alert(this.goPath);
 	},
 	methods: {
 		refreshPath(item, i) {
@@ -153,13 +155,13 @@ export default {
 			const pageInfo = {
 				DirId: dirId,
 				PageIndex: _this.pageIndex,
-				PageSize: _this.pageSize
+				PageSize: _this.pageSize,
+				sorting:'Id'
 			}
 			console.log('dirId:', dirId)
 			//调用getPathFiles获取当前目录下的新文件
 			getPathFiles(pageInfo).then((data) => {
-				if (data.isSuccessed === true) {
-					data = data.response;
+				if (data.items.length>0) {
 					console.log('data:', data)
 					//刷新页码组件
 					_this.pageIndex = data.pageIndex;
@@ -169,9 +171,11 @@ export default {
 					data = data.items;
 					for (let i = 0; i < _this.pageSize && i < data.length; i++) {
 						const tempData = data[i];
-						tempData.length = fileSizeTransfer(tempData.length)
+						tempData.length = fileSizeTransfer(tempData.size)
 						let newItem = {};
+						tempData.createdDate=formatDateTime(tempData.createdDate);
 						if (tempData.isDir === true) {
+							//是个文件夹，所以需要fileUrl
 							newItem = {
 								userId: tempData.userId,
 								filename: tempData.name,
@@ -180,20 +184,19 @@ export default {
 								fileId: tempData.id,
 								updateTime: tempData.updateTime,
 								fileSize: '',
-								wtType: this.whatType(tempData.ext),
+								// wtType: this.whatType(tempData.ext),
 								fileUrl: tempData.id
 							}
 						} else {
+							//非文件夹，无需fileurl
 							newItem = {
 								userId: tempData.userId,
-								filename: tempData.name + tempData.ext,
-								ext: tempData.ext,
+								filename: tempData.name,
 								isDir: tempData.isDir,
 								fileId: tempData.id,
-								updateTime: tempData.updateTime,
+								updateTime: tempData.createdDate,
 								fileSize: tempData.length,
-								wtType: this.whatType(tempData.ext),
-								fileUrl: tempData.url
+								// wtType: this.whatType(tempData.ext),
 							}
 						}
 						// console.log(newItem)
@@ -204,52 +207,76 @@ export default {
 			})
 		},
 		//whatType：通过后缀判断文件类型，以给予tag标签颜色
-		whatType: function (wtType) {
-			switch (wtType) {
-				case '.MD':
-					wtType = '#icon-txt-1';
-					break;
-				case '.jpg' | '.jpeg':
-					wtType = '#icon-JPG';
-					break;
-				case '.doc' | '.docx':
-					wtType = '#icon-DOCX';
-					break;
-				case '.mp4':
-					wtType = '#icon-DOCX';
-					break;
-				default:
-					wtType = 'info';
-					break;
-			}
-			return wtType;
-		},
-		//openOrDownloadFile：打开文件夹或下载文件
+		// whatType: function (wtType) {
+		// 	switch (wtType) {
+		// 		case '.MD':
+		// 			wtType = '#icon-txt-1';
+		// 			break;
+		// 		case '.jpg' | '.jpeg':
+		// 			wtType = '#icon-JPG';
+		// 			break;
+		// 		case '.doc' | '.docx':
+		// 			wtType = '#icon-DOCX';
+		// 			break;
+		// 		case '.mp4':
+		// 			wtType = '#icon-DOCX';
+		// 			break;
+		// 		default:
+		// 			wtType = 'info';
+		// 			break;
+		// 	}
+		// 	return wtType;
+		// },
 		openOrDownloadFile(isDir, path, name) {
 			const _this = this;
-			console.log('download path' + path)
 			if (isDir === true) {
 				this.nowFilePath.push({pathId: path, pathName: name})
 				_this.pageIndex = 1;
 				_this.refreshFiles(path);
 			} else {
-				window.location.href = 'http://localhost:8080/api/file/' + path
+				console.log('download path' + path)
+				window.location.href=`http://localhost:8080/api/private/download?userId=${this.$store.state.userInfo.userId}&fileId=${path}`;
 			}
 		},
-		deleteFileOrFolder(id) {
-			deleteFile(id).then((data) => {
-				if (data.isSuccessed === true) {
-					this.$message("删除成功")
-					this.refreshFiles();
-				}
-			})
+		deleteFileOrFolder(isDir,id) {
+			if(isDir){
+				deleteFolder(id).then((data) => {
+					if (data==200){
+						this.$notify({
+							title: '消息',
+							message: '删除成功！',
+							type: 'success'
+						})
+						this.refreshFiles();
+					}
+					
+				})
+			}else{
+				deleteFile(id).then((data) => {
+					if (data==200){
+						this.$notify({
+							title: '消息',
+							message: '删除成功！',
+							type: 'success'
+						})
+						this.refreshFiles();
+					}
+					
+				})
+			}
+			
 		},
 		renameFF(id){
 			if (this.renameFFName.length<1){
 				this.$message('名称禁止为空')
 			}else{
 				renameFFs(id,this.renameFFName).then(()=>{
-					this.confirmRename=false
+					this.confirmRename=false;
+					this.$notify({
+						title: '消息',
+						message: '重命名成功！',
+						type: 'success'
+					})
 					this.refreshFiles()
 				})
 			}
@@ -270,28 +297,41 @@ export default {
 		},
 		uploadUrl(){
 			if (this.nowFilePath.length===1){
-				return 'http://localhost:8080/api/file/fbank'
+				return 'http://localhost:8080/api/private'
 			}else{
-				return 'http://localhost:8080/api/file/fbank?DirId='+this.nowFilePath[this.nowFilePath.length-1].pathId
+				return 'http://localhost:8080/api/private?DirId='+this.nowFilePath[this.nowFilePath.length-1].pathId
 			}
 		},
 		addFolder(){
 			this.confirmNewFolder=false
 			if (this.newFolderName===''){
-				alert('创建失败')
+				this.$notify({
+					title: '消息',
+					message: '文件夹新建失败！',
+					type: 'error'
+				})
 			}else{
 				const lastOne=this.nowFilePath[this.nowFilePath.length-1];
-				newFolder(lastOne.pathId,this.newFolderName).then((data)=>{
-					console.log(data);
+				newFolder(lastOne.pathId,this.newFolderName).then(()=>{
 					this.refreshFiles(lastOne.pathId)
+				})
+				this.$notify({
+					title: '消息',
+					message: '文件夹新建成功！',
+					type: 'success'
 				})
 			}
 
-		}
-		
+		},
 		
 	},
-	computed: {}
+	props:{
+		goPath:{
+			type:String,
+			required:false,
+			default:''
+		}
+	}
 }
 </script>
 
@@ -307,12 +347,16 @@ export default {
 		margin-top: 25px;
 	}
 }
+.fileMain{
+	border: 0 !important;
+}
 .el-header{
 	height: 40px !important;
 }
 .el-main {
 	padding: 0;
 	padding-left: 20px;
+	padding-right: 20px;
 	/deep/ .el-table__body-wrapper {
 		overflow: initial;
 	}

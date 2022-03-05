@@ -46,8 +46,8 @@ export default {
 
 .el-container {
 	box-sizing: border-box;
-	border: 1.5px solid @line_color2;
-	border-radius: 5px;
+	//border: 1.5px solid @line_color2;
+	//border-radius: 5px;
 	height: 100%;
 	background-color: #fff;
 }

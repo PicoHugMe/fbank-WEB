@@ -35,6 +35,7 @@
 							<!--							<template slot="title"></template>-->
 							<el-menu-item index="1-1">我的</el-menu-item>
 							<el-menu-item index="/Welcome/SelfLibrary/Files">私人知识库</el-menu-item>
+							
 							<el-menu-item index="1-3">待办事项</el-menu-item>
 							<el-menu-item index="1-4">企业服务</el-menu-item>
 							<!--							<el-menu-item index="1-5" ><router-link to="/logins/login/signin" replace>登录</router-link></el-menu-item>-->
@@ -54,6 +55,7 @@
 					<el-menu-item index="3">
 						<span slot="title">通讯录</span>
 					</el-menu-item>
+					<el-menu-item index="/Welcome/Organization/Files">我的组织</el-menu-item>
 					<!--						<template slot="title">-->
 					<!--							<i class="el-icon-s-comment"></i>-->
 					<!--							<span>通讯录</span>-->
@@ -63,11 +65,15 @@
 					<!--							<el-menu-item index="2-1">私聊</el-menu-item>-->
 					<!--							<el-menu-item index="2-2">通知</el-menu-item>-->
 					<!--						</el-menu-item-group>-->
+					
 				</el-menu>
 			</el-aside>
 			<el-container>
 				<el-main>
-					<router-view></router-view>
+					<div style="height: 100%" class="main-inside">
+						<router-view></router-view>
+					</div>
+					
 				</el-main>
 				<!--							<el-footer>Footer</el-footer>-->
 			</el-container>
@@ -76,7 +82,7 @@
 </template>
 
 <script>
-import {getUserInfo} from "@/assets/js/api";
+// import {getUserInfo} from "@/assets/js/api";
 
 export default {
 	data() {
@@ -89,41 +95,41 @@ export default {
 		}
 	},
 	created() {
-		// if (!window.localStorage.isSuccessed) {
-		// 	this.$router.push({path: '/logins/login/signin'});
-		// 	this.$message({
-		// 		type: 'error',
-		// 		message: '非法访问！'
-		// 	})
-		// 	this.$destroy();
-		// } else {
-			if (!this.$store.state.loginInfo.isSuccessed) {
-				const saveMessage = {
-					tokenStr: window.localStorage.token,
-					isSuccessed: window.localStorage.isSuccessed
-				}
-				this.$store.commit('addLoginInfo', saveMessage)
-				const userToken = 'Bearer ' + this.$store.state.loginInfo.tokenStr;
-				getUserInfo(userToken).then((data) => {
-					if (data.isSuccessed) {
-						data = data.response;
-						window.localStorage.userInfo_email = data.email;
-						window.localStorage.userInfo_sex = data.sex;
-						window.localStorage.userInfo_userName = data.userName;
-						this.$store.commit('addUserInfo', {email: data.email, sex: data.sex, userName: data.userName});
-						this.userInfo.username = this.$store.state.userInfo.userName;
-					}
-					console.log('data:', data);
-				})
-				
-			// }
+		if (!window.localStorage.success) {
+			this.$router.push({path: '/logins/login/signin'});
+			this.$message({
+				type: 'error',
+				message: '非法访问！'
+			})
+			this.$destroy();
+		} else {
+			if (this.$store.state.loginInfo.success) {
+				this.userInfo.username=this.$store.state.userInfo.userName
+				// const saveMessage = {
+				// 	access_token: this.$store.state.loginInfo.access_token,
+				// 	success: this.$store.state.loginInfo.success
+				// }
+				// this.$store.commit('addLoginInfo', saveMessage)
+				// const userToken = this.$store.state.loginInfo.token_type+' '+ this.$store.state.loginInfo.access_token;
+				// getUserInfo(userToken).then((data) => {
+				// 	if (data.success) {
+				// 		data = data.response;
+				// 		window.localStorage.userInfo_email = data.email;
+				// 		window.localStorage.userInfo_sex = data.sex;
+				// 		window.localStorage.userInfo_userName = data.userName;
+				// 		this.$store.commit('addUserInfo', {email: data.email, sex: data.sex, userName: data.userName});
+				// 		this.userInfo.username = this.$store.state.userInfo.userName;
+				// 	}
+				// 	console.log('data:', data);
+				// })
+			}
 		}
 	},
 	mounted() {
-		console.log('Welcome\'s this:', this)
+		// console.log('Welcome\'s this:', this)
 	},
 	beforeDestroy() {
-		console.log('welcome destore');
+		// console.log('welcome destore');
 	},
 	methods: {}
 }
@@ -189,4 +195,9 @@ export default {
 	}
 }
 
+.main-inside{
+	border: 1.5px solid #e6e6e6;
+	border-radius: 5px;
+	box-sizing: border-box;
+}
 </style>

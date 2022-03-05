@@ -68,26 +68,36 @@ export default {
 					
 					requestSignIn(loginParams).then((data) => {
 						console.log('data:', data);
-							const saveMessage = {
-                access_token: data.accessToken,
-                expires_in: data.expires,
-                token_type:data.tokenType,
-								success:data.success
-							}
-							window.localStorage.access_token = saveMessage.access_token;
-							window.localStorage.expires_in = saveMessage.expires_in;
-              window.localStorage.token_type = saveMessage.token_type;
-							window.localStorage.success=saveMessage.success;
-							this.$store.commit('addLoginInfo', saveMessage)
+						const saveMessage = {
+							access_token: data.accessToken,
+							expires_in: data.expires,
+							success:data.success
+						}
+						
+						window.localStorage.expires_in = saveMessage.expires_in;
+						window.localStorage.success=saveMessage.success;
+						window.localStorage.access_token = data.tokenType+' '+saveMessage.access_token;
+						const strings=saveMessage.access_token.split(".");
+						
+						const tempUserId=JSON.parse(decodeURIComponent(escape(window.atob(strings[1].replace(/-/g,"+").replace(/_/g,"/")))))['sub'];
+						const userInfo={
+							email: loginParams.email,
+							sex:2,
+							userName:loginParams.email,
+							userId:tempUserId
+						}
+						this.$store.commit('addUserInfo',userInfo);
+						alert(this.$store.state.userInfo.userId);
+						this.$store.commit('addLoginInfo', saveMessage)
+						setTimeout(function () {
+							_this.$message({
+								message: '登录成功，正在跳转。',
+								type: 'success'
+							})
 							setTimeout(function () {
-								_this.$message({
-									message: '登录成功，正在跳转。',
-									type: 'success'
-								})
-								setTimeout(function () {
-									_this.$router.push({path: '/Welcome'})
-								}, 200)
-							}, 800)
+								_this.$router.push({path: '/Welcome'})
+							}, 200)
+						}, 800)
 					}).catch((e) => {
 						_this.$alert(e.response.data[0], '错误', {confirmButtonText: '确定'})
 						_this.loading = false;

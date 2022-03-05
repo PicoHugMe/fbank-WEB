@@ -13,8 +13,8 @@ module.exports = {
 								ws: true,
 								changeOrigin: true
 						},
-						'/api/privatespace': {
-								target: 'http://localhost:7260',
+						'/api/private': {
+								target: 'https://localhost:7260',
 								ws: true,
 								changeOrigin: true
 						},
