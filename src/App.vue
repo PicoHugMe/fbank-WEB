@@ -9,9 +9,9 @@
 export default {
 	name: 'App',
 	components: {},
-	mounted() {
-		// console.log('store',this)
-	}
+	// created() {
+  //   if(sessionStorage.getItem())
+  // }
 }
 </script>
 

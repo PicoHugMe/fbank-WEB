@@ -8,6 +8,7 @@
 				<el-col :span="12">
 					<div class="notify"></div>
 					<div class="self">
+            <button @click="exitAll()">退出</button>
 						<img
 							src='https://avataaars.io/?avatarStyle=Circle&topType=ShortHairShortWaved&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light'
 							alt="用户头像"
@@ -16,6 +17,7 @@
 						<i class="el-icon-arrow-down"></i>
 <!--						<div class="moreInfo"></div>-->
 					</div>
+
 				</el-col>
 			</el-row>
 		</el-header>
@@ -26,35 +28,35 @@
 					router
 				>
 					<!--					class="el-menu-vertical-demo">-->
-					<el-submenu index="1-1">
-						<template slot="title">
-							<i class="el-icon-s-home"></i>
-							<span>个人中心</span>
-						</template>
-						<el-menu-item-group>
-							<!--							<template slot="title"></template>-->
-							<el-menu-item index="1-1">我的</el-menu-item>
+<!--					<el-submenu index="1-1">-->
+<!--						<template slot="title">-->
+<!--							<i class="el-icon-s-home"></i>-->
+<!--							<span>个人中心</span>-->
+<!--						</template>-->
+<!--						<el-menu-item-group>-->
+<!--							&lt;!&ndash;							<template slot="title"></template>&ndash;&gt;-->
+<!--							<el-menu-item index="1-1">我的</el-menu-item>-->
 							<el-menu-item index="/Welcome/SelfLibrary/Files">私人知识库</el-menu-item>
 							
-							<el-menu-item index="1-3">待办事项</el-menu-item>
-							<el-menu-item index="1-4">企业服务</el-menu-item>
+<!--							<el-menu-item index="1-3">待办事项</el-menu-item>-->
+<!--							<el-menu-item index="1-4">企业服务</el-menu-item>-->
 							<!--							<el-menu-item index="1-5" ><router-link to="/logins/login/signin" replace>登录</router-link></el-menu-item>-->
-						</el-menu-item-group>
-					</el-submenu>
-					<el-submenu index="2">
-						<template slot="title">
-							<i class="el-icon-s-comment"></i>
-							<span>站内通讯</span>
-						</template>
-						<el-menu-item-group>
-							<!--							<template slot="title"></template>-->
-							<el-menu-item index="2-1">私聊</el-menu-item>
-							<el-menu-item index="2-2">通知</el-menu-item>
-						</el-menu-item-group>
-					</el-submenu>
-					<el-menu-item index="3">
-						<span slot="title">通讯录</span>
-					</el-menu-item>
+<!--						</el-menu-item-group>-->
+<!--					</el-submenu>-->
+<!--					<el-submenu index="2">-->
+<!--						<template slot="title">-->
+<!--							<i class="el-icon-s-comment"></i>-->
+<!--							<span>站内通讯</span>-->
+<!--						</template>-->
+<!--						<el-menu-item-group>-->
+<!--							&lt;!&ndash;							<template slot="title"></template>&ndash;&gt;-->
+<!--							<el-menu-item index="2-1">私聊</el-menu-item>-->
+<!--							<el-menu-item index="2-2">通知</el-menu-item>-->
+<!--						</el-menu-item-group>-->
+<!--					</el-submenu>-->
+<!--					<el-menu-item index="3">-->
+<!--						<span slot="title">通讯录</span>-->
+<!--					</el-menu-item>-->
 					<el-menu-item index="/Welcome/Organization/Files">我的组织</el-menu-item>
 					<!--						<template slot="title">-->
 					<!--							<i class="el-icon-s-comment"></i>-->
@@ -95,7 +97,7 @@ export default {
 		}
 	},
 	created() {
-		if (!window.localStorage.success) {
+		if (!window.sessionStorage.success) {
 			this.$router.push({path: '/logins/login/signin'});
 			this.$message({
 				type: 'error',
@@ -131,7 +133,12 @@ export default {
 	beforeDestroy() {
 		// console.log('welcome destore');
 	},
-	methods: {}
+	methods: {
+    exitAll(){
+      window.sessionStorage.clear()
+      location.reload()
+    }
+  }
 }
 </script>
 

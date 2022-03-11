@@ -73,10 +73,10 @@ export default {
 							expires_in: data.expires,
 							success:data.success
 						}
-						
-						window.localStorage.expires_in = saveMessage.expires_in;
-						window.localStorage.success=saveMessage.success;
-						window.localStorage.access_token = data.tokenType+' '+saveMessage.access_token;
+						sessionStorage.setItem('expires_in',saveMessage.expires_in)
+            sessionStorage.setItem('success',saveMessage.success)
+            sessionStorage.setItem('access_token',data.tokenType+' '+saveMessage.access_token)
+
 						const strings=saveMessage.access_token.split(".");
 						
 						const tempUserId=JSON.parse(decodeURIComponent(escape(window.atob(strings[1].replace(/-/g,"+").replace(/_/g,"/")))))['sub'];
@@ -86,8 +86,13 @@ export default {
 							userName:loginParams.email,
 							userId:tempUserId
 						}
-						this.$store.commit('addUserInfo',userInfo);
-						alert(this.$store.state.userInfo.userId);
+            sessionStorage.setItem('email',loginParams.email)
+            sessionStorage.setItem('sex',2)
+            sessionStorage.setItem('userName',loginParams.email)
+            sessionStorage.setItem('userId',tempUserId)
+
+            this.$store.commit('addUserInfo',userInfo);
+						// alert(this.$store.state.userInfo.userId);
 						this.$store.commit('addLoginInfo', saveMessage)
 						setTimeout(function () {
 							_this.$message({
