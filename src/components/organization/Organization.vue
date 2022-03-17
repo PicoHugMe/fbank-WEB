@@ -18,7 +18,6 @@
     <el-header>
       <el-button size="normal" type="primary" @click="createOrgVisible=true">创建组织</el-button>
       <el-button size="normal">加入组织</el-button>
-
       <!--			<el-button size="danger" >退出当前组织</el-button>-->
       <!--			<el-button size="danger" >删除当前组织</el-button>-->
     </el-header>
@@ -29,7 +28,7 @@
       </el-card>
     </el-main>
     <el-footer>
-      <router-view goPath="101ac5fb-9b8b-4886-b81d-48bac0f768d2"></router-view>
+      <router-view :goPath="goPath"></router-view>
     </el-footer>
   </el-container>
 </template>
@@ -49,27 +48,22 @@ export default {
         // {
         // 	orgName: '组织2',
         // 	whoMake: '赵加威',
-        // },
-        // {
-        // 	orgName: '组织3',
-        // 	whoMake: '自己',
-        // },
-        // {
-        // 	orgName: '组织4',
-        // 	whoMake: '赵加威',
-        // },
-        // {
-        // 	orgName: '组织5',
-        // 	whoMake: '自己',
         // }
       ],
       createOrgVisible: false,
       newOrgName: '',
+      goPath: '4dbc697a-c61e-4a62-94d5-afd8f93da18b'
     }
   },
   mounted() {
     this.refreshOrg();
   },
+updated() {
+  if (this.tableData.length!=0){
+    this.goPath=this.tableData[0].orgId
+  }
+}
+  ,
   methods: {
     CreOrg() {
       const name = this.newOrgName;
@@ -82,26 +76,36 @@ export default {
             type: 'success'
           })
           this.createOrgVisible = false
+          this.newOrgName=''
+          this.refreshOrg();
         }
       })
     },
     refreshOrg() {
+      if (this.tableData.length > 0) {
+        this.tableData.splice(0, this.tableData.length);
+      }
       UserOrgs(window.sessionStorage.getItem('userId'), 'created').then((data) => {
+        console.log('创建的：',data)
         for (let i = 0; i < data.length; i++) {
           this.tableData.push({
             orgName: data[i].name,
-            whoMake: '自己'
+            whoMake: '自己',
+            orgId:data[i].id
           })
         }
       })
       UserOrgs(window.sessionStorage.getItem('userId'), 'joined').then((data) => {
+        console.log('加入的：',data)
         for (let i = 0; i < data.length; i++) {
           this.tableData.push({
             orgName: data[i].name,
-            whoMake: '自己'
+            whoMake: '自己',
+            orgId:data[i].id
           })
         }
       })
+
     }
   }
 }

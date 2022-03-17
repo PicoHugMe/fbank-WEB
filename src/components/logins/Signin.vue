@@ -69,13 +69,13 @@ export default {
 					requestSignIn(loginParams).then((data) => {
 						console.log('data:', data);
 						const saveMessage = {
-							access_token: data.accessToken,
+							access_token: data.tokenType+' '+data.accessToken,
 							expires_in: data.expires,
 							success:data.success
 						}
 						sessionStorage.setItem('expires_in',saveMessage.expires_in)
             sessionStorage.setItem('success',saveMessage.success)
-            sessionStorage.setItem('access_token',data.tokenType+' '+saveMessage.access_token)
+            sessionStorage.setItem('access_token',saveMessage.access_token)
 
 						const strings=saveMessage.access_token.split(".");
 						

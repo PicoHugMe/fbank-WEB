@@ -1,17 +1,17 @@
 <template>
   <el-container class="fileMain">
-    <el-dialog title="新建文件夹" :visible.sync="confirmNewFolder" width="30%" center>
+    <el-dialog :visible.sync="confirmNewFolder" center title="新建文件夹" width="30%">
       <div>
-        <el-input placeholder="请输入文件夹名" v-model="newFolderName"></el-input>
+        <el-input v-model="newFolderName" placeholder="请输入文件夹名"></el-input>
       </div>
       <div class="dialog-footer">
         <el-button type="primary" @click="this.addFolder">确 定</el-button>
         <el-button @click="confirmNewFolder = false;newFolderName=''">取 消</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="重命名" :visible.sync="confirmRename" width="30%" center>
+    <el-dialog :visible.sync="confirmRename" center title="重命名" width="30%">
       <div>
-        <el-input placeholder="请输入新名称" v-model="renameFFName"></el-input>
+        <el-input v-model="renameFFName" placeholder="请输入新名称"></el-input>
       </div>
       <div class="dialog-footer">
         <el-button type="primary" @click="renameFF(selectedId)">确 定</el-button>
@@ -30,16 +30,16 @@
           <div class="add">
             <el-upload
                 :action="uploadUrl()"
-                multiple
-                :show-file-list="false"
                 :auto-upload="true"
+                :file-list="fileList"
+                :headers="myHeaders"
                 :on-progress="uploadProgress"
                 :on-success="isOK"
-                :headers="myHeaders"
-                :file-list="fileList">
-              <el-button plain size="small" type="primary" class="newUpload">上传文件</el-button>
+                :show-file-list="false"
+                multiple>
+              <el-button class="newUpload" plain size="small" type="primary">上传文件</el-button>
             </el-upload>
-            <el-button plain type="primary" size="small" class="newFolder" @click="confirmNewFolder=true">新建文件夹
+            <el-button class="newFolder" plain size="small" type="primary" @click="confirmNewFolder=true">新建文件夹
             </el-button>
           </div>
         </div>
@@ -50,7 +50,7 @@
           :data="tableData"
           style="width: 100%;"
       >
-        <el-table-column prop="filename" label="名称">
+        <el-table-column label="名称" prop="filename">
           <template slot-scope="scope">
             <el-link @click="openOrDownloadFile(scope.row.isDir,scope.row.fileId,scope.row.filename)">
               {{ scope.row.filename }}
@@ -58,8 +58,8 @@
           </template>
         </el-table-column>
         <!--				<el-table-column prop="tag" label="标签"></el-table-column>-->
-        <el-table-column prop="updateTime" label="修改日期"></el-table-column>
-        <el-table-column prop="actions" label="操作">
+        <el-table-column label="修改日期" prop="updateTime"></el-table-column>
+        <el-table-column label="操作" prop="actions">
           <template slot-scope="scope">
             <div class="action">
               <i class="el-icon-more"></i>
@@ -80,8 +80,8 @@
                   </el-button>
                 </el-row>
                 <el-row>
-                  <el-button size="mini" @click="openOrDownloadFile(scope.row.isDir,scope.row.fileId)"
-                             :disabled="scope.row.isDir">下载
+                  <el-button :disabled="scope.row.isDir" size="mini"
+                             @click="openOrDownloadFile(scope.row.isDir,scope.row.fileId)">下载
                   </el-button>
                 </el-row>
                 <!--								<el-row>-->
@@ -94,24 +94,24 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="fileSize" label="文件大小"></el-table-column>
+        <el-table-column label="文件大小" prop="fileSize"></el-table-column>
       </el-table>
     </el-main>
     <el-footer>
       <el-pagination
-          background
-          layout="prev, pager, next"
-          @current-change="refreshFiles()"
           :current-page.sync="pageIndex"
           :page-size="pageSize"
-          :total="totalItems">
+          :total="totalItems"
+          background
+          layout="prev, pager, next"
+          @current-change="refreshFiles()">
       </el-pagination>
     </el-footer>
   </el-container>
 </template>
 
 <script>
-import {deleteFile, getPathFiles, newFolder, renameFFs, deleteFolder} from "@/assets/js/api";
+import {deleteFile, deleteFolder, getPathFiles, newFolder, renameFFs} from "@/assets/js/api";
 import {fileSizeTransfer, formatDateTime} from "@/assets/js/Global";
 
 export default {
@@ -136,13 +136,25 @@ export default {
       nowFilePath: [
         {
           pathId: '',
-          pathName: '私人知识库'
-        }]
+          pathName: ''
+        }
+      ]
     }
   },
+  beforeMount() {
+    if (this.goPath == '') {
+      this.nowFilePath.pop()
+      this.nowFilePath.push({
+        pathId: '',
+        pathName: '私人知识库'
+      })
+    }
+  }
+  ,
   mounted() {
+    console.log('propPath:',this.goPath)
     this.refreshFiles(this.goPath);
-    // alert(this.goPath);
+
   },
   methods: {
     refreshPath(item, i) {
@@ -335,6 +347,7 @@ export default {
     goPath: {
       type: String,
       required: false,
+      // default: window.sessionStorage.getItem('userId')
       default: ''
     }
   },
@@ -345,7 +358,7 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 @import "src/assets/css/FileColor";
 @import "src/assets/css/Global";
 
