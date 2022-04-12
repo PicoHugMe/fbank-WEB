@@ -18,6 +18,8 @@
         <el-button @click="confirmRename = false;renameFFName='';selectedId=''">取 消</el-button>
       </div>
     </el-dialog>
+
+
     <el-header>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item v-for="(item,i) in nowFilePath" :key="i">
@@ -45,6 +47,9 @@
         </div>
       </el-breadcrumb>
     </el-header>
+
+
+
     <el-main v-loading="isLoading" class="mainBox">
       <el-table
           :data="tableData"
@@ -59,6 +64,7 @@
         </el-table-column>
         <!--				<el-table-column prop="tag" label="标签"></el-table-column>-->
         <el-table-column label="修改日期" prop="updateTime"></el-table-column>
+        <el-table-column label="文件大小" prop="fileSize"></el-table-column>
         <el-table-column label="操作" prop="actions">
           <template slot-scope="scope">
             <div class="action">
@@ -84,9 +90,6 @@
                              @click="openOrDownloadFile(scope.row.isDir,scope.row.fileId)">下载
                   </el-button>
                 </el-row>
-                <!--								<el-row>-->
-                <!--									<el-button size="mini">分享</el-button>-->
-                <!--								</el-row>-->
                 <el-row>
                   <el-button size="mini" @click="deleteFileOrFolder(scope.row.isDir,scope.row.fileId)">删除</el-button>
                 </el-row>
@@ -94,7 +97,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="文件大小" prop="fileSize"></el-table-column>
+
       </el-table>
     </el-main>
     <el-footer>
@@ -153,8 +156,7 @@ export default {
   ,
   mounted() {
     console.log('propPath:',this.goPath)
-    this.refreshFiles(this.goPath);
-
+    this.refreshFiles();
   },
   methods: {
     refreshPath(item, i) {

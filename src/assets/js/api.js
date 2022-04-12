@@ -122,4 +122,16 @@ export const UserOrgs = (uid,path) => {
 		}
     }).then(res=>res.data)
 }
+//获取所有组织
+export const AllOrgs=()=>{
+    return axios.get(`${base}/api/organization`,{
+        headers:{
+            'Authorization': window.sessionStorage['access_token']
+        },
+        params:{
+            sorting:'createdDate'
+        }
+    }).then(res=>res.data)
+}
+
 

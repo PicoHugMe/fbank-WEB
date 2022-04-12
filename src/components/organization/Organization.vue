@@ -28,86 +28,84 @@
       </el-card>
     </el-main>
     <el-footer>
-      <router-view :goPath="goPath"></router-view>
+      <!--      此处为 组织内文件 -->
+      <router-view></router-view>
     </el-footer>
   </el-container>
 </template>
 
 <script>
-import {createOrg, UserOrgs} from "@/assets/js/api"
+// import {createOrg, UserOrgs} from "@/assets/js/api"
 
 export default {
   name: "Organization",
-  data() {
-    return {
-      tableData: [
-        // {
-        // 	orgName: '组织1',
-        // 	whoMake: '自己',
-        // },
-        // {
-        // 	orgName: '组织2',
-        // 	whoMake: '赵加威',
-        // }
-      ],
-      createOrgVisible: false,
-      newOrgName: '',
-      goPath: '4dbc697a-c61e-4a62-94d5-afd8f93da18b'
-    }
-  },
-  mounted() {
-    this.refreshOrg();
-  },
-updated() {
-  if (this.tableData.length!=0){
-    this.goPath=this.tableData[0].orgId
-  }
-}
-  ,
-  methods: {
-    CreOrg() {
-      const name = this.newOrgName;
-      const pid = window.sessionStorage.userId
-      createOrg(name, pid).then((data) => {
-        if (data.status === 200) {
-          this.$notify({
-            title: '消息',
-            message: '创建组织成功！',
-            type: 'success'
-          })
-          this.createOrgVisible = false
-          this.newOrgName=''
-          this.refreshOrg();
-        }
-      })
-    },
-    refreshOrg() {
-      if (this.tableData.length > 0) {
-        this.tableData.splice(0, this.tableData.length);
-      }
-      UserOrgs(window.sessionStorage.getItem('userId'), 'created').then((data) => {
-        console.log('创建的：',data)
-        for (let i = 0; i < data.length; i++) {
-          this.tableData.push({
-            orgName: data[i].name,
-            whoMake: '自己',
-            orgId:data[i].id
-          })
-        }
-      })
-      UserOrgs(window.sessionStorage.getItem('userId'), 'joined').then((data) => {
-        console.log('加入的：',data)
-        for (let i = 0; i < data.length; i++) {
-          this.tableData.push({
-            orgName: data[i].name,
-            whoMake: '自己',
-            orgId:data[i].id
-          })
-        }
-      })
+  // data() {
+  //   return {
+  //     tableData: [
+  //       // {
+  //       // 	orgName: '组织1',
+  //       // 	whoMake: '自己',
+  //       // }
+  //     ],
+  //     createOrgVisible: false,
+  //     newOrgName:''
+  //   }
+  // },
+  // mounted() {
+  //
+  //   this.refreshOrg();
+  // },
+  updated() {
+    if (this.tableData.length != 0) {
+      this.goPath = this.tableData[0].orgId
 
     }
   }
+  ,
+  // methods: {
+  //   CreOrg() {
+  //     const name = this.newOrgName;
+  //     const pid = window.sessionStorage.userId
+  //     createOrg(name, pid).then((data) => {
+  //       if (data.status === 200) {
+  //         this.$notify({
+  //           title: '消息',
+  //           message: '创建组织成功！',
+  //           type: 'success'
+  //         })
+  //         this.createOrgVisible = false
+  //         this.newOrgName = ''
+  //         this.refreshOrg();
+  //       }
+  //     })
+  //   },
+    // refreshOrg() {
+    //   if (this.tableData.length > 0) {
+    //     this.tableData.splice(0, this.tableData.length);
+    //   }
+    //   UserOrgs(window.sessionStorage.getItem('userId'), 'created').then((data) => {
+    //     console.log('创建的：', data)
+    //     for (let i = 0; i < data.length; i++) {
+    //       this.tableData.push({
+    //         orgName: data[i].name,
+    //         whoMake: '自己',
+    //         orgId: data[i].id
+    //       })
+    //     }
+    //   })
+    //   UserOrgs(window.sessionStorage.getItem('userId'), 'joined').then((data) => {
+    //     console.log('加入的：', data)
+    //     for (let i = 0; i < data.length; i++) {
+    //       this.tableData.push({
+    //         orgName: data[i].name,
+    //         whoMake: '自己',
+    //         orgId: data[i].id
+    //       })
+    //     }
+    //   })
+    //
+    // }
+  // }
 }
 
 </script>

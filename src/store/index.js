@@ -21,7 +21,11 @@ const mutations = {
     },
     updateNowOrgPath(state, value) {
         state.nowOrgPath = value.nowOrgPath;
-    }
+    },
+    // addOrgTree(state,value){
+    //     console.log(value)
+    //     state.OrgTree.pop(value)
+    // }
 }
 //state保存具体的数据
 const state = {
@@ -36,7 +40,7 @@ const state = {
         userName: '用户名',
         userId: ''
     },
-    nowOrgPath: '/'
+    nowOrgPath: '/',
 }
 
 //创建并暴露store

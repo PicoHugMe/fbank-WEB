@@ -16,6 +16,7 @@ import Recently from "@/components/selflibrary/Recently";
 // import RecentFive from "../components/selflibrary/RecentFive";
 
 import Organization from "../components/organization/Organization";
+import OrgFiles from "../components/organization/Files"
 
 Vue.use(Router)
 
@@ -45,6 +46,7 @@ const router = new Router({
 										meta: {
 												title: '登入 - FBank'
 										},
+
 								}
 						]
 				},
@@ -72,23 +74,30 @@ const router = new Router({
 												}
 										]
 								},
-								{
-										path: 'Organization',
-										component: Organization,
-										meta: {
-												title: '我的组织'
-										},
-										children:[
-												{
-														path: 'Files',
-														component: Files,
-														meta:{
-																title:'我的组织'
-														}
-												}
-										]
-
+								// {
+								// 		path: 'Organization',
+								// 		component: Organization,
+								// 		meta: {
+								// 				title: '我的组织'
+								// 		},
+								// 		children:[
+								// 				{
+								// 						path: 'Files',
+								// 						component: OrgFiles,
+								// 						meta:{
+								// 								title:'我的组织'
+								// 						}
+								// 				}
+								// 		]
+								//
+								// }
+							{
+								path: 'Files',
+								component: OrgFiles,
+								meta: {
+									title: '我的组织'
 								}
+							}
 						]
 				},
 		],

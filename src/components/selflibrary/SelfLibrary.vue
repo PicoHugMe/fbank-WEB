@@ -1,6 +1,6 @@
 <template>
 	<el-container>
-		
+
 		<el-aside width="150px">
 			<el-menu
 				router
@@ -30,8 +30,8 @@
 			</el-menu>
 		</el-aside>
 		<el-main>
-			<router-view></router-view>
-		</el-main>
+      <router-view></router-view>
+    </el-main>
 	</el-container>
 </template>
 
@@ -55,7 +55,7 @@ export default {
 .el-aside {
 	height: 100%;
 	border-right: 1px solid @line_color2;
-	
+
 	> ul {
 		border-right: 0;
 	}
