@@ -12,16 +12,17 @@ import Welcome from "../components/Welcome";
 
 import SelfLibrary from "../components/selflibrary/SelfLibrary";
 import Files from "../components/selflibrary/Files";
-import Recently from "@/components/selflibrary/Recently";
+import Developing from "@/components/Developing";
+// import Recently from "@/components/selflibrary/Recently";
 // import RecentFive from "../components/selflibrary/RecentFive";
 
-import Organization from "../components/organization/Organization";
+// import Organization from "../components/organization/Organization";
 import OrgFiles from "../components/organization/Files"
 
 Vue.use(Router)
 
 const router = new Router({
-		mode: 'history',
+		// mode: 'history',
 		// base:process.env.BASE_URL,
 		routes: [
 				{
@@ -69,9 +70,9 @@ const router = new Router({
 														component: Files,
 												},
 												{
-														path:'Recently',
-														component:Recently,
-												}
+														path:'Developing',
+														component:Developing,
+												},
 										]
 								},
 								// {

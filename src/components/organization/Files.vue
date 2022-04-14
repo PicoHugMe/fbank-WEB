@@ -32,11 +32,19 @@
         <el-button @click="confirmRename = false;renameFFName='';selectedId=''">取 消</el-button>
       </div>
     </el-dialog>
+    <el-dialog :visible.sync="orgUserManage" center title="组织成员管理" width="40%">
+      <el-table :data="orgUsers" style="width: 100%">
+        <el-table-column prop="username" label="用户" ></el-table-column>
+        <el-table-column width="100px"><el-button>移除</el-button></el-table-column>
+
+      </el-table>
+    </el-dialog>
 
 
     <el-header>
       <el-button size="normal" type="primary" @click="createOrgVisible=true">创建组织</el-button>
       <el-button size="normal">加入组织</el-button>
+      <el-button size="normal" @click="orgUserManage=true">组织成员管理</el-button>
       <el-button size="danger">退出当前组织</el-button>
       <el-button size="danger">删除当前组织</el-button>
     </el-header>
@@ -145,6 +153,12 @@ export default {
           pathName: this.$route.query.pName
         }
       ],
+      orgUsers:[
+        {username:'testname@123.com'},
+        {username:'testname@456.com'},
+        {username:'testname@789.com'}
+      ],
+      orgUserManage:false,
       confirmRename: false,
       confirmNewFolder: false,
       isLoading:true,
@@ -170,10 +184,36 @@ export default {
   methods:{
     //创建组织
     CreOrg(){
-      const name = this.newOrgName;
-      const pid = window.sessionStorage.userId
-      createOrg(name, pid).then((data) => {
-        if (data.status === 200) {
+      this.$store.commit('changeOrg',[
+        {
+          label:'技术部门',
+          id:'c4ed38a2-3e10-415e-adf4-1c140cc74fa3',
+          children:[{
+            label: '产品设计部门',
+            id:'b94892ed-a71e-491c-a674-71303eebc073',
+          },{
+            label: '界面设计部门',
+            id:'d53d614c-d73e-4ad8-be8d-acf841e0ad32',
+            children:[{
+              label:'后台界面设计',
+              id:'csdsd'
+            }]
+          },{
+            label: '交互设计部门',
+            id:'d53d614c-d73e-4ad8-be8d-acf841e0ad32',
+          },]
+        },{
+          label: '前端开发部门',
+          id:'06f2cc3c-db18-4d7b-a8cf-076abbb16648',
+        },{
+          label: '后端开发部门',
+          id:'06f2cc3c-db18-4d7b-a8cf-076abbb16648',
+        }
+      ])
+      // const name = this.newOrgName;
+      // const pid = window.sessionStorage.userId
+      // createOrg(name, pid).then((data) => {
+      //   if (data.status === 200) {
           this.$notify({
             title: '消息',
             message: '创建组织成功！',
@@ -182,8 +222,8 @@ export default {
           this.createOrgVisible = false
           this.newOrgName = ''
           this.refreshOrg();
-        }
-      })
+        // }
+      // })
     },
 
   //  刷新组织

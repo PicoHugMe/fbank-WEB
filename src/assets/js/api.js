@@ -133,5 +133,25 @@ export const AllOrgs=()=>{
         }
     }).then(res=>res.data)
 }
+//上传文件
+export const uploadFile=(num,DirId)=>{
+    if (num===1){
+        return axios.get(`${base}/api/private`,{
+            headers:{
+                'Authorization': window.sessionStorage['access_token']
+            },
+        }).then(res=>res.data)
+    }else{
+        return axios.get(`${base}/api/private`,{
+            headers:{
+                'Authorization': window.sessionStorage['access_token']
+            },
+            params:{
+                DirId:DirId
+            }
+        }).then()
+    }
+
+}
 
 

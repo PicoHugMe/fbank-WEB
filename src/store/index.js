@@ -22,6 +22,9 @@ const mutations = {
     updateNowOrgPath(state, value) {
         state.nowOrgPath = value.nowOrgPath;
     },
+    changeOrg(state,value){
+        state.orgTree=value.orgTree;
+    }
     // addOrgTree(state,value){
     //     console.log(value)
     //     state.OrgTree.pop(value)
@@ -41,6 +44,32 @@ const state = {
         userId: ''
     },
     nowOrgPath: '/',
+    orgTree: [
+        {
+            label:'技术部门',
+            id:'c4ed38a2-3e10-415e-adf4-1c140cc74fa3',
+            children:[{
+                label: '产品设计部门',
+                id:'b94892ed-a71e-491c-a674-71303eebc073',
+            },{
+                label: '界面设计部门',
+                id:'d53d614c-d73e-4ad8-be8d-acf841e0ad32',
+                children:[{
+                    label:'后台界面设计',
+                    id:'csdsd'
+                }]
+            },{
+                label: '交互设计部门',
+                id:'d53d614c-d73e-4ad8-be8d-acf841e0ad32',
+            },]
+        },{
+            label: '前端开发部门',
+            id:'06f2cc3c-db18-4d7b-a8cf-076abbb16648',
+        },{
+            label: '后端开发部门',
+            id:'06f2cc3c-db18-4d7b-a8cf-076abbb16648',
+        }
+    ],
 }
 
 //创建并暴露store

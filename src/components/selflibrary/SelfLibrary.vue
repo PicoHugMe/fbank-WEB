@@ -11,19 +11,19 @@
 					<i class="el-icon-files"></i>
 					<span slot="title">全部文件</span>
 				</el-menu-item>
-				<el-menu-item index="/Welcome/SelfLibrary/Recently">
+				<el-menu-item index="/Welcome/SelfLibrary/Developing">
 					<i class="el-icon-finished"></i>
 					<span slot="title">最近</span>
 				</el-menu-item>
-				<el-menu-item index="3">
+        <el-menu-item index="/Welcome/SelfLibrary/Developing">
 					<i class="el-icon-collection"></i>
 					<span slot="title">收藏</span>
 				</el-menu-item>
-				<el-menu-item index="4">
+        <el-menu-item index="/Welcome/SelfLibrary/Developing">
 					<i class="el-icon-collection"></i>
 					<span slot="title">共享</span>
 				</el-menu-item>
-				<el-menu-item index="5">
+        <el-menu-item index="/Welcome/SelfLibrary/Developing">
 					<i class="el-icon-collection-tag"></i>
 					<span slot="title">标签</span>
 				</el-menu-item>

@@ -70,15 +70,6 @@
             <div class="action">
               <i class="el-icon-more"></i>
               <div class="actions">
-                <!--								<el-row class="tags">-->
-                <!--									<div>标签</div>-->
-                <!--									<div>-->
-                <!--										<el-button type="danger" circle size="mini"></el-button>-->
-                <!--										<el-button type="warning" circle size="mini"></el-button>-->
-                <!--										<el-button type="success" circle size="mini"></el-button>-->
-                <!--										<el-button type="info" circle size="mini"></el-button>-->
-                <!--									</div>-->
-                <!--								</el-row>-->
                 <el-row>
                   <el-button size="mini"
                              @click="selectedId=scope.row.fileId;confirmRename=true;renameFFName=`${scope.row.filename}`">
@@ -121,8 +112,10 @@ export default {
   name: "Files",
   data() {
     return {
-      myHeaders: {'Authorization': window.localStorage['access_token']},
-      tableData: [],
+      myHeaders: {'Authorization': window.sessionStorage['access_token']},
+      tableData: [
+
+      ],
       isLoading: true, //加载动画
       modHeight: '100%',//调整高度,暂不启用
       pageIndex: 1,
@@ -226,27 +219,6 @@ export default {
         this.isLoading = false;
       })
     },
-    //whatType：通过后缀判断文件类型，以给予tag标签颜色
-    // whatType: function (wtType) {
-    // 	switch (wtType) {
-    // 		case '.MD':
-    // 			wtType = '#icon-txt-1';
-    // 			break;
-    // 		case '.jpg' | '.jpeg':
-    // 			wtType = '#icon-JPG';
-    // 			break;
-    // 		case '.doc' | '.docx':
-    // 			wtType = '#icon-DOCX';
-    // 			break;
-    // 		case '.mp4':
-    // 			wtType = '#icon-DOCX';
-    // 			break;
-    // 		default:
-    // 			wtType = 'info';
-    // 			break;
-    // 	}
-    // 	return wtType;
-    // },
     openOrDownloadFile(isDir, path, name) {
       const _this = this;
       if (isDir === true) {
@@ -255,7 +227,7 @@ export default {
         _this.refreshFiles(path);
       } else {
         console.log('download path' + path)
-        window.location.href = `http://localhost:8080/api/private/download?userId=${this.$store.state.userInfo.userId}&fileId=${path}`;
+        window.location.href = `http://localhost:8080/api/private/download?userId=${window.sessionStorage.userId}&fileId=${path}`;
       }
     },
     deleteFileOrFolder(isDir, id) {
@@ -353,10 +325,6 @@ export default {
       default: ''
     }
   },
-  created() {
-    // window.addEventListener('beforeunload',()=>{
-    // })
-  }
 }
 </script>
 

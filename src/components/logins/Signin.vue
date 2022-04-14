@@ -65,7 +65,7 @@ export default {
 					this.loading = true;
 					this.$message('正在登录');
 					_this.loginStr = '正在登录';
-					
+
 					requestSignIn(loginParams).then((data) => {
 						console.log('data:', data);
 						const saveMessage = {
@@ -78,7 +78,7 @@ export default {
             sessionStorage.setItem('access_token',saveMessage.access_token)
 
 						const strings=saveMessage.access_token.split(".");
-						
+
 						const tempUserId=JSON.parse(decodeURIComponent(escape(window.atob(strings[1].replace(/-/g,"+").replace(/_/g,"/")))))['sub'];
 						const userInfo={
 							email: loginParams.email,
@@ -100,7 +100,7 @@ export default {
 								type: 'success'
 							})
 							setTimeout(function () {
-								_this.$router.push({path: '/Welcome'})
+								_this.$router.push({path: '/Welcome/SelfLibrary/Files'})
 							}, 200)
 						}, 800)
 					}).catch((e) => {

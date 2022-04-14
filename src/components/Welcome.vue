@@ -37,8 +37,8 @@
           <!--						<el-menu-item-group>-->
           <!--							&lt;!&ndash;							<template slot="title"></template>&ndash;&gt;-->
           <!--							<el-menu-item index="1-1">我的</el-menu-item>-->
-          <el-menu-item disabled index=""  style="text-align: center;padding-left: 0px;font-size: 1.1rem">个人</el-menu-item>
-          <el-menu-item index="/Welcome/SelfLibrary/Files" style="text-align: center;padding-left: 0px" id="selfLib">私人知识库</el-menu-item>
+          <el-menu-item disabled index=""  style="text-align: center;padding-left: 0;font-size: 1.05rem">个人</el-menu-item>
+          <el-menu-item index="/Welcome/SelfLibrary/Files" style="text-align: center;padding-left: 0" id="selfLib">私人知识库</el-menu-item>
 
           <!--							<el-menu-item index="1-3">待办事项</el-menu-item>-->
           <!--							<el-menu-item index="1-4">企业服务</el-menu-item>-->
@@ -59,7 +59,7 @@
           <!--					<el-menu-item index="3">-->
           <!--						<span slot="title">通讯录</span>-->
           <!--					</el-menu-item>-->
-          <el-menu-item disabled index=""  style="text-align: center;padding-left: 0px;font-size: 1.1rem">我的组织</el-menu-item>
+          <el-menu-item disabled index=""  style="text-align: center;padding-left: 0;font-size: 1.05rem">我的组织</el-menu-item>
           <!--						<template slot="title">-->
           <!--							<i class="el-icon-s-comment"></i>-->
           <!--							<span>通讯录</span>-->
@@ -88,7 +88,6 @@
 
 <script>
 // import {getUserInfo} from "@/assets/js/api";
-import {AllOrgs} from "@/assets/js/api";
 
 export default {
   data() {
@@ -99,17 +98,23 @@ export default {
         email: ''
       },
       orgTree: [
-          {
-        label:'试试看',
-            id:'c4ed38a2-3e10-415e-adf4-1c140cc74fa3',
-        children:[{
-          label:'多组织1',
-          id:'4c4ed38a2-3e10-415e-adf4-1c140cc74fa3'
-        }]
-      },{
-        label: '完美1',
-          id:'c4ed38a2-3e10-415e-adf4-1c140cc74fa3',
-        }
+      //     {
+      //   label:'技术部门',
+      //       id:'c4ed38a2-3e10-415e-adf4-1c140cc74fa3',
+      //   children:[{
+      //     label: '产品设计部门',
+      //     id:'b94892ed-a71e-491c-a674-71303eebc073',
+      //   },{
+      //     label: '界面设计部门',
+      //     id:'d53d614c-d73e-4ad8-be8d-acf841e0ad32',
+      //   }]
+      // },{
+      //   label: '前端开发部门',
+      //     id:'06f2cc3c-db18-4d7b-a8cf-076abbb16648',
+      //   },{
+      //     label: '后端开发部门',
+      //     id:'06f2cc3c-db18-4d7b-a8cf-076abbb16648',
+      //   }
       ],
       tempTree:[]
     }
@@ -128,7 +133,7 @@ export default {
     this.getAllOrg()
   },
   mounted() {
-
+    this.orgTree=this.$store.state.orgTree;
   },
   beforeDestroy() {
 
@@ -139,27 +144,33 @@ export default {
       location.reload()
     },
     getAllOrg() {
-      AllOrgs().then((data)=>{
-        let index;
-
-        for(index in data){
-          if(data[index].pId in this.orgTree){
-            console.log(data[index])
-          }else{
-            console.log('false')
-          }
-          this.orgTree.push({[data[index].id]:{children:[]},label:data[index].name})
-        }
-        console.log(this.orgTree)
-      })
+      // AllOrgs().then((data)=>{
+      //   let index;
+      //
+      //   // for(index in data){
+      //   //   if(data[index].pId in this.orgTree){
+      //   //     console.log(data[index])
+      //   //   }else{
+      //   //     console.log('false')
+      //   //   }
+      //   //   this.orgTree.push({[data[index].id]:{children:[]},label:data[index].name})
+      //   // }
+      //   console.log(this.orgTree)
+      // })
     },
     handleNodeClick(orgTree){
-      console.log(typeof (this.$route.path))
-      // if (this.$router.path=='/Welcome/SelfLibrary/Files'){
+      if (this.$route.query.pId!=orgTree.id){
+        console.log('thisClick:'+orgTree.id)
+
         this.$router.push({path: '/Welcome/Files',query:{pId:orgTree.id,pName:orgTree.label}});
+
+      }
+      // if (this.$router.path=='/Welcome/SelfLibrary/Files'){
+      // this.$router.push({path:'/Welcome/selflibrary'})
+
       // }
       //页面刷新
-      console.log(orgTree)
+      // console.log(orgTree)
     }
   }
 }
@@ -232,7 +243,17 @@ export default {
   box-sizing: border-box;
 }
 
+
 /deep/ .el-tree-node__content{
   height: 56px !important;
+  color: #303133;
 }
+/deep/ .is-current:hover{
+  background-color: #ecf5ff;
+
+  //>.el-tree-node__content{
+  //  color: #409EFF;
+  //}
+}
+
 </style>
