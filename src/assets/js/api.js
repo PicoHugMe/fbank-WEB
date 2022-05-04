@@ -151,7 +151,7 @@ export const uploadFile=(num,DirId)=>{
             }
         }).then()
     }
-
 }
+
 
 

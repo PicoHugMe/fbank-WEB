@@ -22,12 +22,12 @@ import OrgFiles from "../components/organization/Files"
 Vue.use(Router)
 
 const router = new Router({
-		// mode: 'history',
+		mode: 'history',
 		// base:process.env.BASE_URL,
 		routes: [
 				{
 						path: '/',
-						redirect: '/logins/login'
+						// redirect: '/logins/login/signin'
 				},
 				{
 						path: '/logins/login',

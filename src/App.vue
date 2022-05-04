@@ -5,10 +5,28 @@
 </template>
 
 <script>
-
 export default {
 	name: 'App',
+	data(){
+		return{
+			// mgr:new Mgr(),
+			signedIn:true
+		}
+	},
 	components: {},
+	mounted() {
+		// this.mgr.getSignedIn().then(
+		// 	signIn => {
+		// 		this.signedIn = signIn
+		// 	},
+		// 	err => {
+		// 		console.log(err)
+		// 	}
+		// )
+	},
+	updated() {
+		console.log('app页面刷新了')
+	}
 	// created() {
   //   if(sessionStorage.getItem())
   // }
