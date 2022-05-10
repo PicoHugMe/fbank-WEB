@@ -1,7 +1,8 @@
 import axios from 'axios'
 
+
 //端口url
-let base = 'http://localhost:8080'
+let base = 'https://localhost:44386'
 
 //请求延时
 // axios.defaults.timeout=10000;
@@ -26,15 +27,21 @@ export const getUserInfo = (userToken) => {
 }
 //获取当前路径下的所有文件信息
 export const getPathFiles = (pathInfo) => {
-    return axios.get(`${base}/api/private`, {
+    const tempText=eval('('+window.sessionStorage.getItem('oidc.user:https://localhost:44317/:Server_Vue')+')');
+    const authorization_text=tempText.token_type+' '+tempText.access_token
+    return axios.get(`${base}/api/private/files`, {
         params: {
-            DirId: pathInfo.DirId,
-            PageIndex: pathInfo.PageIndex,
-            PageSize: pathInfo.PageSize,
-            sorting: pathInfo.sorting
+            //文件夹id
+            pDirId: pathInfo.DirId,
+            //当前页数，从0开始
+            SkipCount: pathInfo.PageIndex-1,
+            //一页几个
+            MaxResultCount:pathInfo.pageSize,
+            //排序方式
+            Sorting: pathInfo.sorting
         },
         headers: {
-            'Authorization': window.sessionStorage['access_token']
+            'Authorization': authorization_text,
         }
     }).then(res => res.data);
 }
@@ -49,28 +56,34 @@ export const getRecentPathFiles = (pathInfo) => {
 }
 
 export const deleteFile = (Id) => {
-    return axios.delete(`${base}/api/private?fileid=${Id}`, {
+    const tempText=eval('('+window.sessionStorage.getItem('oidc.user:https://localhost:44317/:Server_Vue')+')');
+    const authorization_text=tempText.token_type+' '+tempText.access_token
+    return axios.delete(`${base}/api/private/files/${Id}`, {
         headers: {
-            'Authorization': window.sessionStorage['access_token']
+            'Authorization': authorization_text
         }
     }).then(res => res.status);
 }
 
 export const deleteFolder = (Id) => {
-    return axios.delete(`${base}/api/private/dir?Id=${Id}`, {
+    const tempText=eval('('+window.sessionStorage.getItem('oidc.user:https://localhost:44317/:Server_Vue')+')');
+    const authorization_text=tempText.token_type+' '+tempText.access_token
+    return axios.delete(`${base}/api/private/files/${Id}`, {
         headers: {
-            'Authorization': window.sessionStorage['access_token']
+            'Authorization': authorization_text
         }
     }).then(res => res.status);
 }
 
 export const newFolder = (pDirId, dirName) => {
+    const tempText=eval('('+window.sessionStorage.getItem('oidc.user:https://localhost:44317/:Server_Vue')+')');
+    const authorization_text=tempText.token_type+' '+tempText.access_token
     if (pDirId.length > 0) {
         return axios.post(`${base}/api/private/dir?pDirId=${pDirId}`, {
             name: dirName
         }, {
             headers: {
-                'Authorization': window.sessionStorage['access_token']
+                'Authorization': authorization_text,
             }
         }).then(res => res.data)
     } else {
@@ -78,7 +91,7 @@ export const newFolder = (pDirId, dirName) => {
             name: dirName
         }, {
             headers: {
-                'Authorization': window.sessionStorage['access_token']
+                'Authorization': authorization_text,
             }
         }).then(res => res.data)
     }
@@ -86,15 +99,16 @@ export const newFolder = (pDirId, dirName) => {
 }
 
 export const renameFFs = (Id, newName,) => {
-    return axios.put(`${base}/api/private`, {
+    const tempText=eval('('+window.sessionStorage.getItem('oidc.user:https://localhost:44317/:Server_Vue')+')');
+    const authorization_text=tempText.token_type+' '+tempText.access_token
+    return axios.put(`${base}/api/private/files`, {
             id: Id,
             name: newName,
             description: ''
         }, {
-            headers: {
-                'Authorization': window.sessionStorage['access_token']
-
-            }
+        headers: {
+            'Authorization': authorization_text,
+        }
         }
     )
 }
@@ -124,13 +138,12 @@ export const UserOrgs = (uid,path) => {
 }
 //获取所有组织
 export const AllOrgs=()=>{
-    return axios.get(`${base}/api/organization`,{
+    const tempText=eval('('+window.sessionStorage.getItem('oidc.user:https://localhost:44317/:Server_Vue')+')');
+    const authorization_text=tempText.token_type+' '+tempText.access_token
+    return axios.get(`${base}/api/organizations`,{
         headers:{
-            'Authorization': window.sessionStorage['access_token']
+            'Authorization': authorization_text
         },
-        params:{
-            sorting:'createdDate'
-        }
     }).then(res=>res.data)
 }
 //上传文件
@@ -151,6 +164,28 @@ export const uploadFile=(num,DirId)=>{
             }
         }).then()
     }
+}
+//下载文件
+export const downloadFile=(fileId)=>{
+    const tempText=eval('('+window.sessionStorage.getItem('oidc.user:https://localhost:44317/:Server_Vue')+')');
+    const authorization_text=tempText.token_type+' '+tempText.access_token
+
+    return axios.get(`${base}/api/private/files/${fileId}`,{
+        headers: {
+            'Authorization': authorization_text,
+        },
+        responseType:'blob'
+    })
+}
+//获取用户头像
+export const getUserLogo=()=>{
+    const tempText=eval('('+window.sessionStorage.getItem('oidc.user:https://localhost:44317/:Server_Vue')+')');
+    const authorization_text=tempText.token_type+' '+tempText.access_token
+    return axios.get(`${base}/api/account/my-profile/profile-picture`,{
+        headers:{
+            'Authorization': authorization_text,
+        }
+    })
 }
 
 

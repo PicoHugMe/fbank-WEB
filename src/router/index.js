@@ -1,11 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Login from "../components/logins/Login";
-import Signup from "../components/logins/Signup";
-import Signin from "../components/logins/Signin";
-
-
+import CheckLogined from "@/components/logins/CheckLogined";
 
 import Welcome from "../components/Welcome";
 
@@ -19,6 +15,9 @@ import Developing from "@/components/Developing";
 // import Organization from "../components/organization/Organization";
 import OrgFiles from "../components/organization/Files"
 
+import SelfCenter from "@/components/selfCenter/SelfCenter";
+import SelfInfo from "@/components/selfCenter/SelfInfo";
+
 Vue.use(Router)
 
 const router = new Router({
@@ -27,29 +26,7 @@ const router = new Router({
 		routes: [
 				{
 						path: '/',
-						// redirect: '/logins/login/signin'
-				},
-				{
-						path: '/logins/login',
-						component: Login,
-						redirect: '/logins/login/signin',
-						children: [
-								{
-										path: 'Signin',
-										component: Signin,
-										meta: {
-												title: '登入 - FBank'
-										},
-								},
-								{
-										path: 'Signup',
-										component: Signup,
-										meta: {
-												title: '登入 - FBank'
-										},
-
-								}
-						]
+						component:CheckLogined
 				},
 				{
 						path: '/Welcome',
@@ -75,30 +52,17 @@ const router = new Router({
 												},
 										]
 								},
-								// {
-								// 		path: 'Organization',
-								// 		component: Organization,
-								// 		meta: {
-								// 				title: '我的组织'
-								// 		},
-								// 		children:[
-								// 				{
-								// 						path: 'Files',
-								// 						component: OrgFiles,
-								// 						meta:{
-								// 								title:'我的组织'
-								// 						}
-								// 				}
-								// 		]
-								//
-								// }
 							{
 								path: 'Files',
 								component: OrgFiles,
 								meta: {
 									title: '我的组织'
 								}
-							}
+							},
+								{
+										path:'SelfCenter',
+										component:SelfCenter,
+								}
 						]
 				},
 		],

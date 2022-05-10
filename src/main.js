@@ -21,38 +21,15 @@ Vue.config.productionTip = false
 
 // import mgr from '@/assets/js/SecurityService'
 
-// router.beforeEach(async (to, from, next) => {
-//
-// //路由发生变化修改页面标题title
-// 		if (to.meta.title) {
-// 				document.title = to.meta.title
-// 		}
-// 		next()
-// 		// console.log('页面刷新了')
-// // if (window.localStorage.getItem())
-// //路由发生变化判断是否登录
-// // 		mgr.signinRedirect().then((data)=>{
-// // 				console.log('data::::',data)
-// // 		})
-// // mgr.getSignedIn().then((data)=>{
-// // 		console.log('data:',data)
-// // })
-// // if (mgr.getSignedIn().then()) {
-// // 		next()
-// // }else {
-// // 		mgr.signIn();
-// // }
-// // if (user){
-// // 		console.log('拿到了user',user)
-// //
-// // }else{
-// // 		mgr.signinRedirect().then(()=>{
-// // 				console.log('开始登录')
-// // 		}).catch(error=>{
-// // 				console.error(error)
-// // 		})
-// // }
-// })
+router.beforeEach(async (to, from, next) => {
+
+//路由发生变化修改页面标题title
+		if (to.meta.title) {
+				document.title = to.meta.title
+		}
+		next()
+
+});
 
 new Vue({
 		router,

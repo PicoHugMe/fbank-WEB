@@ -24,7 +24,7 @@
 
 <script>
 import {requestSignIn} from "@/assets/js/api";
-import mgr from "@/assets/js/SecurityService";
+import {mgr} from "@/assets/js/SecurityService";
 
 export default {
 	name: "Signin",

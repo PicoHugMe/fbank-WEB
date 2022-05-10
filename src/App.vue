@@ -25,7 +25,7 @@ export default {
 		// )
 	},
 	updated() {
-		console.log('app页面刷新了')
+		// console.log('app页面刷新了')
 	}
 	// created() {
   //   if(sessionStorage.getItem())

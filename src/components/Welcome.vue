@@ -1,7 +1,6 @@
 <template>
 	<el-container class="root">
 		<el-header>
-			<el-button @click="testaaa()">Lorem ipsum dolor sit amet.</el-button>
 			<el-row>
 				<el-col :span="12">
 					<img alt="" src="../assets/pic/chang_clear_noword_256.png"/>
@@ -9,10 +8,9 @@
 				<el-col :span="12">
 					<div class="notify"></div>
 					<div class="self">
-						
 						<img
 							alt="用户头像"
-							src='../assets/pic/default_user.svg'
+							:src=userInfo.user_logo
 						/>
 						<span>{{ userInfo.username }}&ensp;</span>
 						<el-button @click="exitAll()" size="mini">退出</el-button>
@@ -25,58 +23,7 @@
 		</el-header>
 		<el-container>
 			<el-aside width="200px">
-				<el-menu
-					:default-active="$route.path"
-					router
-				>
-					<!--					class="el-menu-vertical-demo">-->
-					<!--					<el-submenu index="1-1">-->
-					<!--						<template slot="title">-->
-					<!--							<i class="el-icon-s-home"></i>-->
-					<!--							<span>个人中心</span>-->
-					<!--						</template>-->
-					<!--						<el-menu-item-group>-->
-					<!--							&lt;!&ndash;							<template slot="title"></template>&ndash;&gt;-->
-					<!--							<el-menu-item index="1-1">我的</el-menu-item>-->
-					<el-menu-item disabled index="" style="text-align: center;padding-left: 0;font-size: 1.05rem">个人
-					</el-menu-item>
-					<el-menu-item index="/Welcome/SelfLibrary/Files" style="text-align: center;padding-left: 0" id="selfLib">
-						私人知识库
-					</el-menu-item>
-					
-					<!--							<el-menu-item index="1-3">待办事项</el-menu-item>-->
-					<!--							<el-menu-item index="1-4">企业服务</el-menu-item>-->
-					<!--							<el-menu-item index="1-5" ><router-link to="/logins/login/signin" replace>登录</router-link></el-menu-item>-->
-					<!--						</el-menu-item-group>-->
-					<!--					</el-submenu>-->
-					<!--					<el-submenu index="2">-->
-					<!--						<template slot="title">-->
-					<!--							<i class="el-icon-s-comment"></i>-->
-					<!--							<span>站内通讯</span>-->
-					<!--						</template>-->
-					<!--						<el-menu-item-group>-->
-					<!--							&lt;!&ndash;							<template slot="title"></template>&ndash;&gt;-->
-					<!--							<el-menu-item index="2-1">私聊</el-menu-item>-->
-					<!--							<el-menu-item index="2-2">通知</el-menu-item>-->
-					<!--						</el-menu-item-group>-->
-					<!--					</el-submenu>-->
-					<!--					<el-menu-item index="3">-->
-					<!--						<span slot="title">通讯录</span>-->
-					<!--					</el-menu-item>-->
-					<el-menu-item disabled index="" style="text-align: center;padding-left: 0;font-size: 1.05rem">我的组织
-					</el-menu-item>
-					<!--						<template slot="title">-->
-					<!--							<i class="el-icon-s-comment"></i>-->
-					<!--							<span>通讯录</span>-->
-					<!--						</template>-->
-					<!--						<el-menu-item-group>-->
-					<!--							&lt;!&ndash;							<template slot="title"></template>&ndash;&gt;-->
-					<!--							<el-menu-item index="2-1">私聊</el-menu-item>-->
-					<!--							<el-menu-item index="2-2">通知</el-menu-item>-->
-					<!--						</el-menu-item-group>-->
-				
-				</el-menu>
-				<el-tree :data="orgTree" @node-click="handleNodeClick"></el-tree>
+				<el-tree :data="orgTree" @node-click="handleNodeClick" node-key="id" highlight-current :default-expanded-keys=orgTreeExpended></el-tree>
 			</el-aside>
 			<el-container>
 				<el-main>
@@ -92,18 +39,67 @@
 </template>
 
 <script>
-// import {getUserInfo} from "@/assets/js/api";
-import mgr from '@/assets/js/SecurityService'
+import {mgr} from "@/assets/js/SecurityService";
+import {delCookie} from "@/assets/js/Global";
+import {AllOrgs, getUserLogo} from "@/assets/js/api";
 
 export default {
 	data() {
 		return {
+			backInfo: '',
 			userInfo: {
 				username: '',
 				sex: 2,
-				email: ''
+				email: '',
+				email_verify: '',
+				sub: '',
+				user_logo:'../assets/pic/chang_clear_noword_256.png'
 			},
 			orgTree: [
+				{
+					label: '个人',
+					disabled: true,
+					id: '999999999',
+					children: [
+						{
+							label: '私人知识库',
+							id: 'selfLibrary'
+						},
+						{
+							label: '个人中心',
+							id:'selfControlCenter'
+						}]
+				},
+				{
+					label: '我的组织',
+					id: '888888888',
+					children: [
+						{
+							label: '啥',
+							id: 'csdsd'
+						}
+					]
+				},
+				{
+					label: '通讯录',
+					id: '777777777'
+				},
+				{
+					id: '666666666', label: '通知'
+				},
+				{
+					id: '444444444',
+					label: '邮件服务'
+				},
+				{
+					label: '待办事项',
+					id: '333333333'
+				},
+				{
+					label: '企业服务',
+					id: '222222222'
+				}
+				
 				//     {
 				//   label:'技术部门',
 				//       id:'c4ed38a2-3e10-415e-adf4-1c140cc74fa3',
@@ -114,99 +110,93 @@ export default {
 				//     label: '界面设计部门',
 				//     id:'d53d614c-d73e-4ad8-be8d-acf841e0ad32',
 				//   }]
-				// },{
-				//   label: '前端开发部门',
-				//     id:'06f2cc3c-db18-4d7b-a8cf-076abbb16648',
-				//   },{
-				//     label: '后端开发部门',
-				//     id:'06f2cc3c-db18-4d7b-a8cf-076abbb16648',
-				//   }
+				// }
 			],
-			tempTree: []
+			orgTreeExpended: ['999999999']
 		}
 	},
 	created() {
-		// mgr.signinRedirect().then((data)=>{
-		// 	console.log('welcome第一次输出data',data)
-		// })
-		// mgr.getUser().then((data)=>{
-		// 	console.log('data222:',data)
-		// })
-		if (window.localStorage.getItem('isLoading')!='true'){
-			if (window.localStorage.getItem('isLoading')!='loading'){
-				window.localStorage.setItem('isLoading','loading')
-				mgr.signinRedirectCallback().then((data)=>{
-					console.log('callback的data',data)
-					window.localStorage.setItem('isLoading','true')
-				})
-			}
-		}
-
-		
-		// this.mgr.signinRedirectCallback(url).then(function (loggedUser) {
-		//   console.log(loggedUser)
-		//   ///// the logged user contains the user info
-		// });
-		// if (window.localStorage)
-		// if (!window.sessionStorage.success) {
-		//   this.$router.push({path: '/logins/login/signin'});
-		//   this.$message({
-		//     type: 'error',
-		//     message: '非法访问！'
-		//   })
-		//   this.$destroy();
-		// } else {
-		//     this.userInfo.username = window.sessionStorage.userName
-		// }
-		// this.getAllOrg()
+		const loadingin = this.$loading({
+			lock: true,
+			text: '正在匹配登录信息',
+			spinner: 'el-icon-loading',
+			background: 'rgba(0, 0, 0, 0.7)'
+		});
 	},
 	mounted() {
-		this.orgTree = this.$store.state.orgTree;
+		this.checkIfLogin();
 	},
 	beforeDestroy() {
 	
 	},
 	updated() {
-		console.log('welcome页面刷新了')
 	},
 	methods: {
-		testaaa(){
-			mgr.signinRedirectCallback().then((data)=>{
-				console.log('callback的data',data)
+		//验证是否登录
+		async checkIfLogin() {
+			await mgr.signinRedirectCallback().then((data) => {
+				if (this.$route.path=='/Welcome'){
+					this.$router.push('/Welcome/SelfLibrary/Files')
+				}
+				console.log('datais', data)
+				this.getUserInfo();
+				this.getAllOrg();
+				this.$loading().close();
+				
+			}).catch(() => {
+				window.sessionStorage.clear()
+				delCookie();
+				this.$router.push('/')
 			})
 		},
+		//从token获取用户信息
+		getUserInfo() {
+			const tempInfo = eval('(' + window.sessionStorage.getItem('oidc.user:https://localhost:44317/:Server_Vue') + ')').profile;
+			this.userInfo.username = tempInfo.name;
+			this.userInfo.email = tempInfo.email;
+			this.userInfo.sub = tempInfo.sub;
+			getUserLogo().then((data)=>{
+				console.log('this is getUserLogo:',data)
+			}).catch((error)=>{
+				if (error.response.data=='用户头像不存在！'){
+					this.userInfo.user_logo='https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+				}
+			})
+			// console.log('this is tempinfo', tempInfo)
+		},
+		//退出登录
 		exitAll() {
+			mgr.signoutRedirect();
 			window.sessionStorage.clear()
 			location.reload()
 		},
+		
+		
 		getAllOrg() {
-			// AllOrgs().then((data)=>{
-			//   let index;
-			//
-			//   // for(index in data){
-			//   //   if(data[index].pId in this.orgTree){
-			//   //     console.log(data[index])
-			//   //   }else{
-			//   //     console.log('false')
-			//   //   }
-			//   //   this.orgTree.push({[data[index].id]:{children:[]},label:data[index].name})
-			//   // }
-			//   console.log(this.orgTree)
-			// })
+			AllOrgs().then((data)=>{
+				console.log('this is org:',data)
+			})
 		},
 		handleNodeClick(orgTree) {
-			if (this.$route.query.pId != orgTree.id) {
-				console.log('thisClick:' + orgTree.id)
-				
-				this.$router.push({path: '/Welcome/Files', query: {pId: orgTree.id, pName: orgTree.label}});
-				
+			switch (orgTree.id) {
+				case 'selfLibrary':
+					if(this.$route.path!='/Welcome/SelfLibrary/Files'){
+						this.$router.push({path: '/Welcome/SelfLibrary/Files'});
+					}
+					break;
+				case '999999999':
+					break;
+				case 'selfControlCenter':
+					if (this.$route.path!='/Welcome/SelfCenter'){
+						this.$router.push({path:'/Welcome/SelfCenter'});
+					}
+					break;
+				default:
+					// this.$route.query.pId != orgTree.id
+					console.log('thisClick:' + orgTree.id)
+					this.$router.push({path: '/Welcome/Files', query: {pId: orgTree.id, pName: orgTree.label}});
+					break;
 			}
-			// if (this.$router.path=='/Welcome/SelfLibrary/Files'){
-			// this.$router.push({path:'/Welcome/selflibrary'})
-			
-			// }
-			//页面刷新
-			// console.log(orgTree)
 		}
 	}
 }
